@@ -9,5 +9,7 @@ public class ListRandomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_random);
+
+        setTitle(getResources().getText(R.string.random_list_title));
     }
 }

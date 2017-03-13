@@ -3,4 +3,6 @@
     <string name="button_show_activities">Show all activities</string>
     <string name="button_random_activities">Show four random activities</string>
     <string name="tv_main_activity">Choose an option</string>
+    <string name="full_list_title">All Activities</string>
+    <string name="random_list_title">Random Activities</string>
 </resources>
