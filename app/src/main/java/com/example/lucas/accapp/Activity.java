@@ -1,9 +1,5 @@
 package com.example.lucas.accapp;
 
-/**
- * Created by lucas on 3/13/17.
- */
-
 public class Activity {
 
     private int id;
@@ -14,7 +10,12 @@ public class Activity {
 
         this.id = id;
         this.name = name;
-        this.time = time;
+        this.time = time;  // Seconds
+    }
+
+    public void setId(int id) {
+
+        this.id = id;
     }
 
     public int getId() {
@@ -22,9 +23,19 @@ public class Activity {
         return this.id;
     }
 
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
     public String getName() {
 
         return this.name;
+    }
+
+    public void setTime(float time) {
+
+        this.time = time;
     }
 
     public float getTime() {
