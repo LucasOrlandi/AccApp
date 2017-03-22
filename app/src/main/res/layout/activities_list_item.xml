@@ -9,22 +9,26 @@
     >
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.02" />
+
+    <TextView
         android:id="@+id/tv_activity_id"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_weight="0.02" />
 
     <TextView
         android:id="@+id/tv_activity_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.40" />
+        android:layout_weight="0.11" />
 
-    <Button
-        android:id="@+id/button_start"
+    <TextView
+        android:id="@+id/tv_activity_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="10sp"
-        />
+        android:layout_weight="0.02" />
+
 </LinearLayout>

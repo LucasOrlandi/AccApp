@@ -6,6 +6,8 @@ public class Activity {
     private String name;
     private float time;
 
+    public Activity() { }
+
     public Activity(int id, String name, float time) {
 
         this.id = id;
