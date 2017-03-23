@@ -1,10 +1,13 @@
 package com.example.lucas.accapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,11 +29,22 @@ public class ListActivity extends AppCompatActivity {
         listView.addHeaderView(header);
         listView.setAdapter(itemsAdapter);
 
-
-        ActivitiesAdapter adapter = new ActivitiesAdapter(this, items);
+        final ActivitiesAdapter adapter = new ActivitiesAdapter(this, items);
         listView.setAdapter(adapter);
 
         this.fillList(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Activity selectedItem = (Activity) adapter.getItem(position-1);
+
+                Intent intent = new Intent(ListActivity.this, FinalActivity.class);
+                intent.putExtra("selectedActivity", selectedItem);
+                startActivity(intent);
+            }
+        });
     }
 
     private void fillList(ActivitiesAdapter adapter) {

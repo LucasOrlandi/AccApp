@@ -1,6 +1,8 @@
 package com.example.lucas.accapp;
 
-public class Activity {
+import java.io.Serializable;
+
+public class Activity implements Serializable{
 
     private int id;
     private String name;
