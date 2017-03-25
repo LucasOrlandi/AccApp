@@ -1,9 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.lucas.accapp.FinalActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="30dp" />
+
+        <Chronometer
+            android:id="@+id/chronometer2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:format="%H:%M:%S" />
+
+        <TextView
+            android:id="@+id/tv_acc_y"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/chronometer2"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="153dp"
+            android:layout_toEndOf="@+id/tv_y"
+            android:layout_toRightOf="@+id/tv_y" />
+
+        <TextView
+            android:id="@+id/tv_x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_acc_y"
+            android:layout_alignBottom="@+id/tv_acc_y"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:text="X:" />
+
+        <TextView
+            android:id="@+id/tv_z"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_acc_y"
+            android:layout_alignBottom="@+id/tv_acc_y"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="82dp"
+            android:layout_marginRight="82dp"
+            android:text="Z:" />
+
+        <TextView
+            android:id="@+id/tv_acc_x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_x"
+            android:layout_alignBottom="@+id/tv_x"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/tv_x"
+            android:layout_toRightOf="@+id/tv_x" />
+
+        <TextView
+            android:id="@+id/tv_y"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParent="true"
+            android:layout_alignTop="@+id/tv_acc_x"
+            android:layout_marginLeft="155dp"
+            android:layout_marginStart="155dp"
+            android:text="Y:" />
+
+        <TextView
+            android:id="@+id/tv_acc_z"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_z"
+            android:layout_alignBottom="@+id/tv_z"
+            android:layout_alignLeft="@+id/tv_z"
+            android:layout_alignStart="@+id/tv_z"
+            android:layout_marginLeft="17dp"
+            android:layout_marginStart="17dp" />
+
+
+    </RelativeLayout>
+</LinearLayout>
