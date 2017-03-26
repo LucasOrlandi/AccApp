@@ -22,7 +22,6 @@ public class ListActivity extends AppCompatActivity {
 
         ArrayList<Activity> items = new ArrayList<Activity>();
 
-
         ArrayAdapter<Activity> itemsAdapter = new ArrayAdapter<Activity>(this, R.layout.activities_list_item, items);
         ListView listView = (ListView) findViewById(R.id.lv_items);
         View header = getLayoutInflater().inflate(R.layout.list_header, null);

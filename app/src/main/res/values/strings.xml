@@ -5,6 +5,11 @@
     <string name="tv_main_activity">Choose an option</string>
     <string name="full_list_title">All Activities</string>
     <string name="random_list_title">Random Activities</string>
+    <string name="button_start_activity">Start</string>
+    <string name="button_reset_activity">Reset</string>
+    <string name="tv_x_coordinate">X:</string>
+    <string name="tv_y_coordinate">Y:</string>
+    <string name="tv_z_coordinate">Z:</string>
 
     <string name="activity0">Other</string>
     <string name="activity1">Lying</string>

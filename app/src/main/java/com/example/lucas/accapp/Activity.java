@@ -6,11 +6,11 @@ public class Activity implements Serializable{
 
     private int id;
     private String name;
-    private float time;
+    private long time;
 
     public Activity() { }
 
-    public Activity(int id, String name, float time) {
+    public Activity(int id, String name, long time) {
 
         this.id = id;
         this.name = name;
@@ -37,12 +37,12 @@ public class Activity implements Serializable{
         return this.name;
     }
 
-    public void setTime(float time) {
+    public void setTime(long time) {
 
         this.time = time;
     }
 
-    public float getTime() {
+    public long getTime() {
 
         return this.time;
     }

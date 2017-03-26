@@ -8,31 +8,34 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tv_selected_activity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="30dp" />
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:textSize="30sp" />
 
         <Chronometer
-            android:id="@+id/chronometer2"
+            android:id="@+id/chrono_activity_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView2"
+            android:layout_below="@+id/tv_selected_activity"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp"
-            android:format="%H:%M:%S" />
+            android:layout_marginTop="141dp"
+            android:format="%H:%M:%S"
+            android:textSize="40sp" />
 
         <TextView
             android:id="@+id/tv_acc_y"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/chronometer2"
+            android:layout_below="@+id/chrono_activity_time"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="153dp"
+            android:layout_marginTop="70dp"
             android:layout_toEndOf="@+id/tv_y"
             android:layout_toRightOf="@+id/tv_y" />
 
@@ -46,7 +49,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
-            android:text="X:" />
+            android:text="@string/tv_x_coordinate" />
 
         <TextView
             android:id="@+id/tv_z"
@@ -58,7 +61,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginEnd="82dp"
             android:layout_marginRight="82dp"
-            android:text="Z:" />
+            android:text="@string/tv_z_coordinate" />
 
         <TextView
             android:id="@+id/tv_acc_x"
@@ -75,11 +78,10 @@
             android:id="@+id/tv_y"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParent="true"
             android:layout_alignTop="@+id/tv_acc_x"
             android:layout_marginLeft="155dp"
             android:layout_marginStart="155dp"
-            android:text="Y:" />
+            android:text="@string/tv_y_coordinate" />
 
         <TextView
             android:id="@+id/tv_acc_z"
@@ -91,6 +93,30 @@
             android:layout_alignStart="@+id/tv_z"
             android:layout_marginLeft="17dp"
             android:layout_marginStart="17dp" />
+
+        <Button
+            android:id="@+id/button_start"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="37dp"
+            android:background="@android:color/holo_blue_light"
+            android:text="@string/button_start_activity"
+            android:layout_alignParentBottom="true"
+            android:layout_alignRight="@+id/tv_acc_y"
+            android:layout_alignEnd="@+id/tv_acc_y" />
+
+        <Button
+            android:id="@+id/button_reset"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_orange_light"
+            android:text="@string/button_reset_activity"
+            android:layout_alignBaseline="@+id/button_start"
+            android:layout_alignBottom="@+id/button_start"
+            android:layout_alignRight="@+id/tv_z"
+            android:layout_alignEnd="@+id/tv_z" />
 
 
     </RelativeLayout>
