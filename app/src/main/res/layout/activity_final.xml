@@ -97,26 +97,26 @@
         <Button
             android:id="@+id/button_start"
             style="@style/Widget.AppCompat.Button.Colored"
+            android:background="@android:color/holo_blue_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="37dp"
-            android:background="@android:color/holo_blue_light"
-            android:text="@string/button_start_activity"
+            android:layout_marginBottom="50dp"
             android:layout_alignParentBottom="true"
-            android:layout_alignRight="@+id/tv_acc_y"
-            android:layout_alignEnd="@+id/tv_acc_y" />
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="80dp"
+            android:text="@string/button_start_activity" />
 
         <Button
             android:id="@+id/button_reset"
             style="@style/Widget.AppCompat.Button.Colored"
+            android:background="@android:color/holo_orange_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_orange_light"
-            android:text="@string/button_reset_activity"
-            android:layout_alignBaseline="@+id/button_start"
-            android:layout_alignBottom="@+id/button_start"
-            android:layout_alignRight="@+id/tv_z"
-            android:layout_alignEnd="@+id/tv_z" />
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="80dp"
+            android:text="@string/button_reset_activity" />
 
 
     </RelativeLayout>
