@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "250755003075",
+    "firebase_url": "https://accapp-ddba8.firebaseio.com",
+    "project_id": "accapp-ddba8",
+    "storage_bucket": "accapp-ddba8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:250755003075:android:99ac66d96f4801bb",
+        "android_client_info": {
+          "package_name": "com.example.lucas.accapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "250755003075-bf4chcm39qepjdpahj3k49sk20ct6dbe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lucas.accapp",
+            "certificate_hash": "39452f7eedcd333ef9fcdbb54c0d54b3e4658a77"
+          }
+        },
+        {
+          "client_id": "250755003075-bp3683vps841rv6t5q8v5j0m3mknb47t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6wZoxNOozx-QkGrILr5mui_x4UHZomXI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "250755003075-bp3683vps841rv6t5q8v5j0m3mknb47t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
