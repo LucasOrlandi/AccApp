@@ -1,6 +1,8 @@
 package com.example.lucas.accapp;
 
 
+import android.os.Environment;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -18,7 +20,7 @@ public class RotationVector {
 
         try {
 
-            file = new File(filename);
+            file = new File(Environment.getExternalStorageDirectory() + "/Documents/" + filename);
             fos = new FileOutputStream(file);
             ps = new PrintStream(fos);
 
@@ -28,14 +30,14 @@ public class RotationVector {
 
     }
 
-    public boolean exists() {
+    public boolean exist() {
 
         return(ps != null);
     }
 
-    public void write(float x, float y, float z) {
+    public void write(float x, float y, float z, float scalar_component) {
 
-        ps.println(x + " " + y + " " + z);
+        ps.println(x + " " + y + " " + z + " " + scalar_component);
     }
 
     public void close() {

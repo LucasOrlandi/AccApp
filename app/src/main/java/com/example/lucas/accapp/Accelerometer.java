@@ -1,6 +1,8 @@
 package com.example.lucas.accapp;
 
 
+import android.os.Environment;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -18,7 +20,7 @@ public class Accelerometer {
 
         try {
 
-            file = new File(filename);
+            file = new File(Environment.getExternalStorageDirectory() + "/Documents/" + filename);
             fos = new FileOutputStream(file);
             ps = new PrintStream(fos);
 
@@ -28,7 +30,7 @@ public class Accelerometer {
 
     }
 
-    public boolean exists() {
+    public boolean exist() {
 
         return(ps != null);
     }

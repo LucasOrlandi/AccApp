@@ -49,24 +49,24 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private Button button_start;
     private Button button_reset;
 
-    private TextView x_acc;  // Displays the X value of the accelerometer
-    private TextView y_acc;  // Displays the Y value of the accelerometer
-    private TextView z_acc;  // Displays the Z value of the accelerometer
-
     private Chronometer chronometer;
     private Activity selectedActivity;  // Activity selected by the user
     private CountDownTimer countDownTimer;  // Makes a timer
 
-    private File file;
-    private FileOutputStream fos;
-    private PrintStream ps;
-
-    private boolean flag;
+    private Accelerometer acc_file;
+    private Gyroscope gyro_file;
+    private Magnetometer magn_file;
+    private RotationVector rv_file;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final);
+
+        acc_file = new Accelerometer("acc_temp.txt");
+        gyro_file= new Gyroscope("gyro_temp.txt");
+        magn_file = new Magnetometer("magn_temp.txt");
+        rv_file = new RotationVector("rv_temp.txt");
 
         /*
             * Makes the gyroscope sensor ready
@@ -100,9 +100,6 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         button_reset = (Button) findViewById(R.id.button_reset);
 
         chronometer = (Chronometer) findViewById(R.id.chrono_activity_time);
-        x_acc = (TextView) findViewById(R.id.tv_acc_x);
-        y_acc = (TextView) findViewById(R.id.tv_acc_y);
-        z_acc = (TextView) findViewById(R.id.tv_acc_z);
 
         /* Gets data from the Intent */
         selectedActivity = (Activity) getIntent().getSerializableExtra("selectedActivity");
@@ -127,9 +124,13 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
             public void onFinish() {
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 beep.startTone(ToneGenerator.TONE_CDMA_ONE_MIN_BEEP);
+
                 accelerometerManager.unregisterListener(FinalActivity.this);
                 accelerometerManager.flush(FinalActivity.this);
-                ps.close();
+                acc_file.close();
+                gyro_file.close();
+                magn_file.close();
+                rv_file.close();
 
                 /* Sends file to database */
             }
@@ -170,27 +171,25 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         float y = event.values[1];
         float z = event.values[2];
 
-        if(sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+        if(sensor.getType() == Sensor.TYPE_ACCELEROMETER && acc_file.exist()) {
 
-            x_acc.setText(String.format("%f", x));
-            y_acc.setText(String.format("%f", y));
-            z_acc.setText(String.format("%f", z));
+            acc_file.write(x, y, z);
+        }
 
-            ps.println(x+" "+y+" "+z);
+        if(sensor.getType() == Sensor.TYPE_GYROSCOPE && gyro_file.exist()) {
 
-        } else if(sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            gyro_file.write(x, y, z);
+        }
 
-            Toast.makeText(getApplicationContext(), "Gyroscope not avaiable", Toast.LENGTH_SHORT).show();
+        if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD && magn_file.exist()) {
 
+            magn_file.write(x, y, z);
+        }
 
-        } else if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+        if(sensor.getType() == Sensor.TYPE_ROTATION_VECTOR && rv_file.exist()) {
 
-            //x_acc.setText(String.format("%f", x));
-            //y_acc.setText(String.format("%f", y));
-            //z_acc.setText(String.format("%f", z));
-
-        } else if(sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-
+            float scalar_componet = event.values[3];
+            rv_file.write(x, y, z, scalar_componet);
         }
     }
 
@@ -201,23 +200,27 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
     private void start() {
 
-        gyroscopeManager.registerListener(FinalActivity.this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
-        magnetometerManager.registerListener(FinalActivity.this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
-        rotationVectorManager.registerListener(FinalActivity.this, rotationVector, SensorManager.SENSOR_DELAY_NORMAL);
-        accelerometerManager.registerListener(FinalActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);  // Qual usar: SENSOR_DELAY_NORMAL OU SENSOR_DELAY_FASTEST?
-        chronometer.setBase(SystemClock.elapsedRealtime() - selectedActivity.getTime()*1000);
+        if(!gyroscopeManager.registerListener(FinalActivity.this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL)) {
 
-        try {
-            file = File.createTempFile("/Documents/temp", ".txt", Environment.getExternalStorageDirectory());
-            fos = new FileOutputStream(file);
-            ps = new PrintStream(fos);
-
-            Toast.makeText(getApplicationContext(), file.getAbsolutePath(), Toast.LENGTH_LONG).show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            gyro_file = null;
         }
 
+        if(!magnetometerManager.registerListener(FinalActivity.this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL)) {
+
+            magn_file = null;
+        }
+
+        if(!rotationVectorManager.registerListener(FinalActivity.this, rotationVector, SensorManager.SENSOR_DELAY_NORMAL)) {
+
+            rv_file = null;
+        }
+
+        if(!accelerometerManager.registerListener(FinalActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)) {
+
+            acc_file = null;
+        }
+
+        chronometer.setBase(SystemClock.elapsedRealtime() - selectedActivity.getTime()*1000);
         countDownTimer.start();
     }
 
