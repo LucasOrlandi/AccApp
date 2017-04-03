@@ -19,7 +19,7 @@
     <TextView
         android:id="@+id/tv_header_activity_id"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="0.02"
         android:background="@android:color/darker_gray"
         android:clickable="false"

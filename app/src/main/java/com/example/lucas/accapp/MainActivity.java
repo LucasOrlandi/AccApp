@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         DataBaseManager db = new DataBaseManager(database);
 
-        Account[] accounts = AccountManager.get(getApplicationContext()).getAccounts();
+        /* Gets the Google account of Android device */
+        Account[] accounts = AccountManager.get(getApplicationContext()).getAccountsByType("com.google");
         db.addNewUser(Build.SERIAL, Build.MODEL, accounts[0].name);
 
         button_show_all = (Button) findViewById(R.id.button_show_all);

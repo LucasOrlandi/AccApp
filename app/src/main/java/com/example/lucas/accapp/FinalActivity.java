@@ -11,10 +11,12 @@ import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -24,8 +26,10 @@ import android.widget.Toast;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.Serializable;
 
 public class FinalActivity extends AppCompatActivity implements SensorEventListener {
@@ -52,6 +56,12 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private Chronometer chronometer;
     private Activity selectedActivity;  // Activity selected by the user
     private CountDownTimer countDownTimer;  // Makes a timer
+
+    private File file;
+    private FileOutputStream fos;
+    private PrintStream ps;
+
+    private boolean flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +127,11 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
             public void onFinish() {
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 beep.startTone(ToneGenerator.TONE_CDMA_ONE_MIN_BEEP);
+                accelerometerManager.unregisterListener(FinalActivity.this);
+                accelerometerManager.flush(FinalActivity.this);
+                ps.close();
+
+                /* Sends file to database */
             }
         };
 
@@ -161,14 +176,18 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
             y_acc.setText(String.format("%f", y));
             z_acc.setText(String.format("%f", z));
 
+            ps.println(x+" "+y+" "+z);
+
         } else if(sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+
+            Toast.makeText(getApplicationContext(), "Gyroscope not avaiable", Toast.LENGTH_SHORT).show();
 
 
         } else if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 
-            x_acc.setText(String.format("%f", x));
-            y_acc.setText(String.format("%f", y));
-            z_acc.setText(String.format("%f", z));
+            //x_acc.setText(String.format("%f", x));
+            //y_acc.setText(String.format("%f", y));
+            //z_acc.setText(String.format("%f", z));
 
         } else if(sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
 
@@ -187,6 +206,17 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         rotationVectorManager.registerListener(FinalActivity.this, rotationVector, SensorManager.SENSOR_DELAY_NORMAL);
         accelerometerManager.registerListener(FinalActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);  // Qual usar: SENSOR_DELAY_NORMAL OU SENSOR_DELAY_FASTEST?
         chronometer.setBase(SystemClock.elapsedRealtime() - selectedActivity.getTime()*1000);
+
+        try {
+            file = File.createTempFile("/Documents/temp", ".txt", Environment.getExternalStorageDirectory());
+            fos = new FileOutputStream(file);
+            ps = new PrintStream(fos);
+
+            Toast.makeText(getApplicationContext(), file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         countDownTimer.start();
     }
