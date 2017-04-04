@@ -10,6 +10,11 @@
     <string name="tv_x_coordinate">X:</string>
     <string name="tv_y_coordinate">Y:</string>
     <string name="tv_z_coordinate">Z:</string>
+    <string name="sensor_accelerometer">accelerometer</string>
+    <string name="sensor_gyroscope">gyroscope</string>
+    <string name="sensor_magnetometer">magnetometer</string>
+    <string name="sensor_rotationVector">rotationVector</string>
+    <string name="file_extension">.txt</string>
 
     <string name="activity0">Other</string>
     <string name="activity1">Lying</string>

@@ -63,11 +63,6 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final);
 
-        acc_file = new Accelerometer("acc_temp.txt");
-        gyro_file= new Gyroscope("gyro_temp.txt");
-        magn_file = new Magnetometer("magn_temp.txt");
-        rv_file = new RotationVector("rv_temp.txt");
-
         /*
             * Makes the gyroscope sensor ready
             *
@@ -127,10 +122,7 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
                 accelerometerManager.unregisterListener(FinalActivity.this);
                 accelerometerManager.flush(FinalActivity.this);
-                acc_file.close();
-                gyro_file.close();
-                magn_file.close();
-                rv_file.close();
+                closeAllFiles();
 
                 /* Sends file to database */
             }
@@ -171,22 +163,22 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         float y = event.values[1];
         float z = event.values[2];
 
-        if(sensor.getType() == Sensor.TYPE_ACCELEROMETER && acc_file.exist()) {
+        if(sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
             acc_file.write(x, y, z);
         }
 
-        if(sensor.getType() == Sensor.TYPE_GYROSCOPE && gyro_file.exist()) {
+        if(sensor.getType() == Sensor.TYPE_GYROSCOPE) {
 
             gyro_file.write(x, y, z);
         }
 
-        if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD && magn_file.exist()) {
+        if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 
             magn_file.write(x, y, z);
         }
 
-        if(sensor.getType() == Sensor.TYPE_ROTATION_VECTOR && rv_file.exist()) {
+        if(sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
 
             float scalar_componet = event.values[3];
             rv_file.write(x, y, z, scalar_componet);
@@ -200,25 +192,12 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
     private void start() {
 
-        if(!gyroscopeManager.registerListener(FinalActivity.this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL)) {
+        createAllFiles();
 
-            gyro_file = null;
-        }
-
-        if(!magnetometerManager.registerListener(FinalActivity.this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL)) {
-
-            magn_file = null;
-        }
-
-        if(!rotationVectorManager.registerListener(FinalActivity.this, rotationVector, SensorManager.SENSOR_DELAY_NORMAL)) {
-
-            rv_file = null;
-        }
-
-        if(!accelerometerManager.registerListener(FinalActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)) {
-
-            acc_file = null;
-        }
+        gyroscopeManager.registerListener(FinalActivity.this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        magnetometerManager.registerListener(FinalActivity.this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+        rotationVectorManager.registerListener(FinalActivity.this, rotationVector, SensorManager.SENSOR_DELAY_NORMAL);
+        accelerometerManager.registerListener(FinalActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
         chronometer.setBase(SystemClock.elapsedRealtime() - selectedActivity.getTime()*1000);
         countDownTimer.start();
@@ -228,5 +207,28 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
         countDownTimer.cancel();
         chronometer.setBase(SystemClock.elapsedRealtime() - selectedActivity.getTime()*1000);
+    }
+
+    private void createAllFiles() {
+
+        acc_file= new Accelerometer(Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_accelerometer) + getResources().getString(R.string.file_extension));
+        gyro_file = new Gyroscope(Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_gyroscope) + getResources().getString(R.string.file_extension));
+        magn_file = new Magnetometer(Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_magnetometer) + getResources().getString(R.string.file_extension));
+        rv_file = new RotationVector(Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_rotationVector) + getResources().getString(R.string.file_extension));
+    }
+
+    private void closeAllFiles() {
+
+        if(acc_file.exist())
+            acc_file.close();
+
+        if(gyro_file.exist())
+            gyro_file.close();
+
+        if(magn_file.exist())
+            magn_file.close();
+
+        if(rv_file.exist())
+            rv_file.close();
     }
 }
