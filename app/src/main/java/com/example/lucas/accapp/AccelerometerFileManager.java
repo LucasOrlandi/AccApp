@@ -1,5 +1,7 @@
 package com.example.lucas.accapp;
 
+
+import android.content.Context;
 import android.os.Environment;
 
 import java.io.File;
@@ -7,20 +9,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-
-public class Gyroscope {
+public class AccelerometerFileManager {
 
     private File file;
     private FileOutputStream fos;
     private PrintStream ps;
 
-    public Gyroscope() { }
+    public AccelerometerFileManager() { }
 
-    public Gyroscope(String filename) {
+    public AccelerometerFileManager(Context context, String filename) {
 
         try {
 
-            file = new File(Environment.getExternalStorageDirectory() + "/Documents/" + filename);
+            file = new File(context.getFilesDir(), filename);
             fos = new FileOutputStream(file);
             ps = new PrintStream(fos);
 

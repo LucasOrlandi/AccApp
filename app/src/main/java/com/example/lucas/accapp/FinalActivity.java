@@ -53,10 +53,10 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private Activity selectedActivity;  // Activity selected by the user
     private CountDownTimer countDownTimer;  // Makes a timer
 
-    private Accelerometer acc_file;
-    private Gyroscope gyro_file;
-    private Magnetometer magn_file;
-    private RotationVector rv_file;
+    private AccelerometerFileManager acc_fm;
+    private GyroscopeFileManager gyro_fm;
+    private MagnetometerFileManager magn_fm;
+    private RotationVectorFileManager rv_fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,23 +165,23 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
         if(sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
-            acc_file.write(x, y, z);
+            acc_fm.write(x, y, z);
         }
 
         if(sensor.getType() == Sensor.TYPE_GYROSCOPE) {
 
-            gyro_file.write(x, y, z);
+            gyro_fm.write(x, y, z);
         }
 
         if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 
-            magn_file.write(x, y, z);
+            magn_fm.write(x, y, z);
         }
 
         if(sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
 
             float scalar_componet = event.values[3];
-            rv_file.write(x, y, z, scalar_componet);
+            rv_fm.write(x, y, z, scalar_componet);
         }
     }
 
@@ -211,24 +211,29 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
     private void createAllFiles() {
 
-        acc_file= new Accelerometer(Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_accelerometer) + getResources().getString(R.string.file_extension));
-        gyro_file = new Gyroscope(Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_gyroscope) + getResources().getString(R.string.file_extension));
-        magn_file = new Magnetometer(Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_magnetometer) + getResources().getString(R.string.file_extension));
-        rv_file = new RotationVector(Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_rotationVector) + getResources().getString(R.string.file_extension));
+        String acc_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_accelerometer) + getResources().getString(R.string.file_extension);
+        String gyro_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_gyroscope) + getResources().getString(R.string.file_extension);
+        String magn_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_magnetometer) + getResources().getString(R.string.file_extension);
+        String rv_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_rotationVector) + getResources().getString(R.string.file_extension);
+
+        acc_fm= new AccelerometerFileManager(getApplicationContext(), acc_file);
+        gyro_fm = new GyroscopeFileManager(getApplicationContext(), gyro_file);
+        magn_fm = new MagnetometerFileManager(getApplicationContext(), magn_file);
+        rv_fm = new RotationVectorFileManager(getApplicationContext(), rv_file);
     }
 
     private void closeAllFiles() {
 
-        if(acc_file.exist())
-            acc_file.close();
+        if(acc_fm.exist())
+            acc_fm.close();
 
-        if(gyro_file.exist())
-            gyro_file.close();
+        if(gyro_fm.exist())
+            gyro_fm.close();
 
-        if(magn_file.exist())
-            magn_file.close();
+        if(magn_fm.exist())
+            magn_fm.close();
 
-        if(rv_file.exist())
-            rv_file.close();
+        if(rv_fm.exist())
+            rv_fm.close();
     }
 }

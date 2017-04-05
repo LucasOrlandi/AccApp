@@ -1,5 +1,7 @@
 package com.example.lucas.accapp;
 
+
+import android.content.Context;
 import android.os.Environment;
 
 import java.io.File;
@@ -7,20 +9,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-
-public class Magnetometer {
+public class RotationVectorFileManager {
 
     private File file;
     private FileOutputStream fos;
     private PrintStream ps;
 
-    public Magnetometer() { }
+    public RotationVectorFileManager() { }
 
-    public Magnetometer(String filename) {
+    public RotationVectorFileManager(Context context, String filename) {
 
         try {
 
-            file = new File(Environment.getExternalStorageDirectory() + "/Documents/" + filename);
+            file = new File(context.getFilesDir(), filename);
             fos = new FileOutputStream(file);
             ps = new PrintStream(fos);
 
@@ -35,9 +36,9 @@ public class Magnetometer {
         return(ps != null);
     }
 
-    public void write(float x, float y, float z) {
+    public void write(float x, float y, float z, float scalar_component) {
 
-        ps.println(x + " " + y + " " + z);
+        ps.println(x + " " + y + " " + z + " " + scalar_component);
     }
 
     public void close() {
