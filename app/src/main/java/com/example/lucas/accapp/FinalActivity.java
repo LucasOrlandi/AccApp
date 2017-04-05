@@ -34,17 +34,11 @@ import java.io.Serializable;
 
 public class FinalActivity extends AppCompatActivity implements SensorEventListener {
 
-    private SensorManager gyroscopeManager;
-    private Sensor gyroscope;
-
-    private SensorManager magnetometerManager;
-    private Sensor magnetometer;
-
-    private SensorManager rotationVectorManager;
+    private SensorManager sensorManager;
     private Sensor rotationVector;
-
-    private SensorManager accelerometerManager;
     private Sensor accelerometer;
+    private Sensor magnetometer;
+    private Sensor gyroscope;
 
     private Button button_start;
     private Button button_reset;
@@ -69,16 +63,16 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
             * Use TYPE_GYROSCOPE to get the rate of rotation with drift compensation;
             * Use TYPE_GYROSCOPE_UNCALIBRATED to get the rate of rotation without drift compensation.
         */
-        gyroscopeManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        gyroscope = gyroscopeManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         /* Makes the magnetometer sensor ready */
-        magnetometerManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        magnetometer = magnetometerManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
         /* Makes the rotation vector sensor ready */
-        rotationVectorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        rotationVector = rotationVectorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        rotationVector = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
         /*
             * Makes the accelerometer sensor ready
@@ -86,8 +80,8 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
             * Use TYPE_ACCELEROMETER to the acceleration force, including the force of gravity;
             * Use TYPE_LINEAR_ACCELERATION to the acceleration force, excluding the force of gravity.
         */
-        accelerometerManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        accelerometer = accelerometerManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         /* Makes the views ready to be used */
         TextView tv_selected_activity_name = (TextView) findViewById(R.id.tv_selected_activity);
@@ -120,11 +114,12 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 beep.startTone(ToneGenerator.TONE_CDMA_ONE_MIN_BEEP);
 
-                accelerometerManager.unregisterListener(FinalActivity.this);
-                accelerometerManager.flush(FinalActivity.this);
+                stopSensorListener();
                 closeAllFiles();
 
                 /* Sends file to database */
+
+                /* TODO: precisa deletar os arquivos nesta funcao */
             }
         };
 
@@ -146,12 +141,20 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     protected void onPause() {
         super.onPause();
 
+        /* TODO: precisa deletar os arquivos nesta funcao */
+
+        stopSensorListener();
+        closeAllFiles();
         countDownTimer.cancel();
     }
 
     protected void onStop() {
         super.onStop();
 
+        /* TODO: precisa deletar os arquivos nesta funcao */
+
+        stopSensorListener();
+        closeAllFiles();
         countDownTimer.cancel();
     }
 
@@ -193,11 +196,7 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private void start() {
 
         createAllFiles();
-
-        gyroscopeManager.registerListener(FinalActivity.this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
-        magnetometerManager.registerListener(FinalActivity.this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
-        rotationVectorManager.registerListener(FinalActivity.this, rotationVector, SensorManager.SENSOR_DELAY_NORMAL);
-        accelerometerManager.registerListener(FinalActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        startSensorListener();
 
         chronometer.setBase(SystemClock.elapsedRealtime() - selectedActivity.getTime()*1000);
         countDownTimer.start();
@@ -205,6 +204,7 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
     private void reset() {
 
+        stopSensorListener();
         countDownTimer.cancel();
         chronometer.setBase(SystemClock.elapsedRealtime() - selectedActivity.getTime()*1000);
     }
@@ -235,5 +235,19 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
         if(rv_fm.exist())
             rv_fm.close();
+    }
+
+    private void startSensorListener() {
+
+        sensorManager.registerListener(FinalActivity.this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(FinalActivity.this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(FinalActivity.this, rotationVector, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(FinalActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    private void stopSensorListener() {
+
+        sensorManager.unregisterListener(FinalActivity.this);
+        sensorManager.flush(FinalActivity.this);
     }
 }
