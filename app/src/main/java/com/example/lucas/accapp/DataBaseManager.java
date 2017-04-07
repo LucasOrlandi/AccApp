@@ -18,10 +18,4 @@ public class DataBaseManager {
         User user = new User(deviceModel, email);
         database.getReference().child("users").child(userID).setValue(user);
     }
-
-    public void saveFile(String path) {
-
-        database.getReference().child("sensors").child(path);
-
-    }
 }

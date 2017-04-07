@@ -31,6 +31,11 @@ public class AccelerometerFileManager {
 
     }
 
+    public File getFile() {
+
+        return(file);
+    }
+
     public boolean exist() {
 
         return(ps != null);

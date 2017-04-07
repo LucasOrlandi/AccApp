@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,14 +53,14 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private MagnetometerFileManager magn_fm;
     private RotationVectorFileManager rv_fm;
 
-    private DataBaseManager db;
+    private StorageManager sm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final);
 
-        db = new DataBaseManager(FirebaseDatabase.getInstance());
+        sm = new StorageManager(FirebaseStorage.getInstance().getReference());
 
         /*
             * Makes the gyroscope sensor ready
@@ -121,12 +122,9 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
                 stopSensorListener();
                 closeAllFiles();
 
-                /* Sends file to database */
-
-
+                /* Sends file to firebase's storage */
+                storeAllFiles();
                 deleteAllFiles();
-
-                /* TODO: precisa deletar os arquivos nesta funcao */
             }
         };
 
@@ -148,8 +146,6 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     protected void onPause() {
         super.onPause();
 
-        /* TODO: precisa deletar os arquivos nesta funcao */
-
         stopSensorListener();
         closeAllFiles();
         deleteAllFiles();
@@ -158,8 +154,6 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
     protected void onStop() {
         super.onStop();
-
-        /* TODO: precisa deletar os arquivos nesta funcao */
 
         stopSensorListener();
         closeAllFiles();
@@ -252,6 +246,14 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         gyro_fm.delete();
         magn_fm.delete();
         rv_fm.delete();
+    }
+
+    private void storeAllFiles() {
+
+        sm.saveFile(getResources().getString(R.string.sensor_accelerometer), acc_fm.getFile());
+        sm.saveFile(getResources().getString(R.string.sensor_gyroscope), gyro_fm.getFile());
+        sm.saveFile(getResources().getString(R.string.sensor_magnetometer), magn_fm.getFile());
+        sm.saveFile(getResources().getString(R.string.sensor_rotationVector), rv_fm.getFile());
     }
 
     private void startSensorListener() {
