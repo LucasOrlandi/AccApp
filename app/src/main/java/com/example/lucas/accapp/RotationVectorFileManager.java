@@ -45,4 +45,9 @@ public class RotationVectorFileManager {
 
         ps.close();
     }
+
+    public void delete() {
+
+        file.delete();
+    }
 }

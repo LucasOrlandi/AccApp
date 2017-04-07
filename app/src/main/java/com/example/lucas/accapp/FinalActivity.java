@@ -52,10 +52,14 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private MagnetometerFileManager magn_fm;
     private RotationVectorFileManager rv_fm;
 
+    private DataBaseManager db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final);
+
+        db = new DataBaseManager(FirebaseDatabase.getInstance());
 
         /*
             * Makes the gyroscope sensor ready
@@ -119,6 +123,9 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
                 /* Sends file to database */
 
+
+                deleteAllFiles();
+
                 /* TODO: precisa deletar os arquivos nesta funcao */
             }
         };
@@ -145,6 +152,7 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
         stopSensorListener();
         closeAllFiles();
+        deleteAllFiles();
         countDownTimer.cancel();
     }
 
@@ -155,6 +163,7 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
         stopSensorListener();
         closeAllFiles();
+        deleteAllFiles();
         countDownTimer.cancel();
     }
 
@@ -235,6 +244,14 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
         if(rv_fm.exist())
             rv_fm.close();
+    }
+
+    private void deleteAllFiles() {
+
+        acc_fm.delete();
+        gyro_fm.delete();
+        magn_fm.delete();
+        rv_fm.delete();
     }
 
     private void startSensorListener() {

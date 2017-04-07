@@ -45,4 +45,9 @@ public class MagnetometerFileManager {
 
         ps.close();
     }
+
+    public void delete() {
+
+        file.delete();
+    }
 }

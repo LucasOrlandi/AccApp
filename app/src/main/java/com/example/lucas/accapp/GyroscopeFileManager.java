@@ -45,4 +45,9 @@ public class GyroscopeFileManager {
 
         ps.close();
     }
+
+    public void delete() {
+
+        file.delete();
+    }
 }

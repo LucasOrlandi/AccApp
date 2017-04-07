@@ -45,4 +45,9 @@ public class AccelerometerFileManager {
 
         ps.close();
     }
+
+    public void delete() {
+
+        file.delete();
+    }
 }
