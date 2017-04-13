@@ -31,7 +31,7 @@ public class ListActivity extends AppCompatActivity {
         final ActivitiesAdapter adapter = new ActivitiesAdapter(this, items);
         listView.setAdapter(adapter);
 
-        this.fillList(adapter);
+        fillList(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
