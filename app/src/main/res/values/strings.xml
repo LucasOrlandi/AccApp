@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Accelerometer</string>
+    <string name="button_refresh">Refresh</string>
     <string name="button_show_activities">Show all activities</string>
     <string name="button_random_activities">Show four random activities</string>
     <string name="tv_main_activity">Choose an option</string>
@@ -65,13 +66,17 @@
     <string name="activity53">Sleeping</string>
     <string name="activity55">Drinking</string>
     <string name="activity56">Talking</string>
-    <string name="activity57">0</string>
-    <string name="activity58">0</string>
-    <string name="activity59">0</string>
-    <string name="activity60">0</string>
-    <string name="activity61">0</string>
-    <string name="activity62">0</string>
-    <string name="activity63">0</string>
-    <string name="activity64">0</string>
+    <string name="activity57">Writing</string>
+    <string name="activity58">Playing checkers</string>
+    <string name="activity59">Playing with a handheld game console</string>
+    <string name="activity60">Washing face</string>
+    <string name="activity61">Open door</string>
+    <string name="activity62">Playing card game</string>
+    <string name="activity63">Dancing</string>
+    <string name="activity64">Clean dust</string>
+    <string name="activity65">Wash car</string>
+    <string name="activity66">Read watch</string>
+    <string name="activity67">Playing with a game console</string>
+    <string name="activity68">Playing chess</string>
 
 </resources>

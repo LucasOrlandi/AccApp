@@ -194,5 +194,41 @@ public class ListActivity extends AppCompatActivity {
 
         Activity item56 = new Activity(56, getResources().getString(R.string.activity56), 60);
         adapter.add(item56);
+
+        Activity item57 = new Activity(57, getResources().getString(R.string.activity57), 60);
+        adapter.add(item57);
+
+        Activity item58 = new Activity(58, getResources().getString(R.string.activity58), 60);
+        adapter.add(item58);
+
+        Activity item59 = new Activity(59, getResources().getString(R.string.activity59), 60);
+        adapter.add(item59);
+
+        Activity item60 = new Activity(60, getResources().getString(R.string.activity60), 10);
+        adapter.add(item60);
+
+        Activity item61 = new Activity(61, getResources().getString(R.string.activity61), 10);
+        adapter.add(item61);
+
+        Activity item62 = new Activity(62, getResources().getString(R.string.activity62), 10);
+        adapter.add(item62);
+
+        Activity item63 = new Activity(63, getResources().getString(R.string.activity63), 60);
+        adapter.add(item63);
+
+        Activity item64 = new Activity(64, getResources().getString(R.string.activity64), 30);
+        adapter.add(item64);
+
+        Activity item65 = new Activity(65, getResources().getString(R.string.activity65), 60);
+        adapter.add(item65);
+
+        Activity item66 = new Activity(66, getResources().getString(R.string.activity66), 10);
+        adapter.add(item66);
+
+        Activity item67 = new Activity(67, getResources().getString(R.string.activity67), 60);
+        adapter.add(item67);
+
+        Activity item68 = new Activity(68, getResources().getString(R.string.activity68), 60);
+        adapter.add(item68);
     }
 }

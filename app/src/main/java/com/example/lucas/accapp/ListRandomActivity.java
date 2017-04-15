@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -16,7 +17,14 @@ import java.util.Random;
 
 public class ListRandomActivity extends AppCompatActivity {
 
+    private ArrayAdapter<Activity> itemsAdapter;
+    private ListView listView;
+    private View header;
+    private ActivitiesAdapter adapter;
+    private ArrayList<Activity> items;
     private ArrayList<Integer> finalIndexes;
+    private Button button_refresh;
+    private int indexes[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,28 +33,31 @@ public class ListRandomActivity extends AppCompatActivity {
 
         setTitle(getResources().getText(R.string.random_list_title));
 
-        int indexes[] = {0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
-                            37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 50, 51, 52, 53, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66};
+        int mIndexes[] = {0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
+                            38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 50, 51, 52, 53, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68};
 
+        indexes = mIndexes;
+
+        createList();
+        header = getLayoutInflater().inflate(R.layout.list_header, null);
+        listView.addHeaderView(header);
 
         finalIndexes = selectActivities(indexes, 4);
-
-        for(int i = 0; i < finalIndexes.size(); i++) {
-            Log.e("finalIndexes", ""+finalIndexes.get(i).intValue());
-        }
-
-        ArrayList<Activity> items = new ArrayList<Activity>();
-
-        ArrayAdapter<Activity> itemsAdapter = new ArrayAdapter<Activity>(this, R.layout.activities_list_item, items);
-        ListView listView = (ListView) findViewById(R.id.lv_random_items);
-        View header = getLayoutInflater().inflate(R.layout.list_header, null);
-        listView.addHeaderView(header);
-        listView.setAdapter(itemsAdapter);
-
-        final ActivitiesAdapter adapter = new ActivitiesAdapter(this, items);
-        listView.setAdapter(adapter);
+        button_refresh = (Button) findViewById(R.id.button_refresh);
 
         fillList(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        button_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refresh();
+            }
+        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -62,11 +73,6 @@ public class ListRandomActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
     }
@@ -74,6 +80,23 @@ public class ListRandomActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    private void createList() {
+
+        items = new ArrayList<Activity>();
+        itemsAdapter = new ArrayAdapter<Activity>(this, R.layout.activities_list_item, items);
+        listView = (ListView) findViewById(R.id.lv_random_items);
+        listView.setAdapter(itemsAdapter);
+
+        adapter = new ActivitiesAdapter(this, items);
+        listView.setAdapter(adapter);
+    }
+
+    private void refresh() {
+        createList();
+        finalIndexes = selectActivities(indexes, 4);
+        fillList(adapter);
     }
 
     private void fillList(ActivitiesAdapter adapter) {
@@ -280,6 +303,53 @@ public class ListRandomActivity extends AppCompatActivity {
                 Activity item56 = new Activity(56, getResources().getString(R.string.activity56), 60);
                 adapter.add(item56);
 
+            } else if(element == 57) {
+                Activity item57 = new Activity(57, getResources().getString(R.string.activity57), 60);
+                adapter.add(item57);
+
+            } else if(element == 58) {
+                Activity item58 = new Activity(58, getResources().getString(R.string.activity58), 60);
+                adapter.add(item58);
+
+            } else if(element == 59) {
+                Activity item59 = new Activity(59, getResources().getString(R.string.activity59), 60);
+                adapter.add(item59);
+
+            } else if(element == 60) {
+                Activity item60 = new Activity(60, getResources().getString(R.string.activity60), 10);
+                adapter.add(item60);
+
+            } else if(element == 61) {
+                Activity item61 = new Activity(61, getResources().getString(R.string.activity61), 10);
+                adapter.add(item61);
+
+            } else if(element == 62) {
+                Activity item62 = new Activity(62, getResources().getString(R.string.activity62), 10);
+                adapter.add(item62);
+
+            } else if(element == 63) {
+                Activity item63 = new Activity(63, getResources().getString(R.string.activity63), 60);
+                adapter.add(item63);
+
+            } else if(element == 64) {
+                Activity item64 = new Activity(64, getResources().getString(R.string.activity64), 30);
+                adapter.add(item64);
+
+            } else if(element == 65) {
+                Activity item65 = new Activity(65, getResources().getString(R.string.activity65), 60);
+                adapter.add(item65);
+
+            } else if(element == 66) {
+                Activity item66 = new Activity(66, getResources().getString(R.string.activity66), 10);
+                adapter.add(item66);
+
+            } else if(element == 67) {
+                Activity item67 = new Activity(67, getResources().getString(R.string.activity67), 60);
+                adapter.add(item67);
+
+            } else if(element == 68) {
+                Activity item68 = new Activity(68, getResources().getString(R.string.activity68), 60);
+                adapter.add(item68);
             }
         }
     }
