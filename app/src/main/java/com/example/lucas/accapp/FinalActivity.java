@@ -3,16 +3,23 @@ package com.example.lucas.accapp;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -32,6 +39,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FinalActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -40,6 +49,8 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private Sensor accelerometer;
     private Sensor magnetometer;
     private Sensor gyroscope;
+
+    private String date;
 
     private Button button_start;
     private Button button_reset;
@@ -53,6 +64,8 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private MagnetometerFileManager magn_fm;
     private RotationVectorFileManager rv_fm;
 
+    private LocationManager locationManager;
+    private Location location;
     private StorageManager sm;
 
     @Override
@@ -99,7 +112,22 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         selectedActivity = (Activity) getIntent().getSerializableExtra("selectedActivity");
 
         tv_selected_activity_name.setText(selectedActivity.getName());
-        chronometer.setBase(SystemClock.elapsedRealtime() - selectedActivity.getTime()*1000);
+        chronometer.setBase(SystemClock.elapsedRealtime() - selectedActivity.getTime() * 1000);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if ((ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        } else {
+            location = new Location(locationManager.GPS_PROVIDER);
+            location.setLatitude(0);
+            location.setLongitude(0);
+        }
+
+        Date mDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy--hh-mm-ss");
+        date = sdf.format(mDate);
     }
 
     protected void onResume() {
@@ -199,6 +227,7 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private void start() {
 
         createAllFiles();
+        writeHeaders();
         startSensorListener();
 
         chronometer.setBase(SystemClock.elapsedRealtime() - selectedActivity.getTime()*1000);
@@ -219,7 +248,7 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         String magn_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_magnetometer) + getResources().getString(R.string.file_extension);
         String rv_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_rotationVector) + getResources().getString(R.string.file_extension);
 
-        acc_fm= new AccelerometerFileManager(getApplicationContext(), acc_file);
+        acc_fm = new AccelerometerFileManager(getApplicationContext(), acc_file);
         gyro_fm = new GyroscopeFileManager(getApplicationContext(), gyro_file);
         magn_fm = new MagnetometerFileManager(getApplicationContext(), magn_file);
         rv_fm = new RotationVectorFileManager(getApplicationContext(), rv_file);
@@ -268,5 +297,10 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
         sensorManager.unregisterListener(FinalActivity.this);
         sensorManager.flush(FinalActivity.this);
+    }
+
+    private void writeHeaders() {
+
+        acc_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, location.getLatitude(), location.getLongitude());
     }
 }
