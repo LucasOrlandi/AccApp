@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -33,14 +34,21 @@ import android.widget.Toast;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 public class FinalActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -49,6 +57,8 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private Sensor accelerometer;
     private Sensor magnetometer;
     private Sensor gyroscope;
+
+    private JSONObject weatherObject;
 
     private String date;
 
@@ -72,6 +82,11 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final);
+
+        acc_fm = null;
+        gyro_fm = null;
+        magn_fm = null;
+        rv_fm = null;
 
         sm = new StorageManager(FirebaseStorage.getInstance().getReference());
 
@@ -126,8 +141,16 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         }
 
         Date mDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy--hh-mm-ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy--HH-mm-ss");
         date = sdf.format(mDate);
+
+        try {
+            weatherObject = new SecondaryThread().execute(location.getLatitude(), location.getLongitude()).get();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
     }
 
     protected void onResume() {
@@ -243,10 +266,12 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
     private void createAllFiles() {
 
-        String acc_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_accelerometer) + getResources().getString(R.string.file_extension);
-        String gyro_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_gyroscope) + getResources().getString(R.string.file_extension);
-        String magn_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_magnetometer) + getResources().getString(R.string.file_extension);
-        String rv_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + System.currentTimeMillis() + "-" + getResources().getString(R.string.sensor_rotationVector) + getResources().getString(R.string.file_extension);
+        long timestamp = System.currentTimeMillis();
+
+        String acc_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + timestamp + "-" + getResources().getString(R.string.sensor_accelerometer) + getResources().getString(R.string.file_extension);
+        String gyro_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + timestamp + "-" + getResources().getString(R.string.sensor_gyroscope) + getResources().getString(R.string.file_extension);
+        String magn_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + timestamp + "-" + getResources().getString(R.string.sensor_magnetometer) + getResources().getString(R.string.file_extension);
+        String rv_file = Build.SERIAL + "-" + selectedActivity.getName().replaceAll("\\s+", "") + "-" + timestamp + "-" + getResources().getString(R.string.sensor_rotationVector) + getResources().getString(R.string.file_extension);
 
         acc_fm = new AccelerometerFileManager(getApplicationContext(), acc_file);
         gyro_fm = new GyroscopeFileManager(getApplicationContext(), gyro_file);
@@ -256,25 +281,32 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
     private void closeAllFiles() {
 
-        if(acc_fm.exist())
+        if(acc_fm != null && acc_fm.exist())
             acc_fm.close();
 
-        if(gyro_fm.exist())
+        if(gyro_fm != null && gyro_fm.exist())
             gyro_fm.close();
 
-        if(magn_fm.exist())
+        if(magn_fm != null && magn_fm.exist())
             magn_fm.close();
 
-        if(rv_fm.exist())
+        if(rv_fm != null && rv_fm.exist())
             rv_fm.close();
     }
 
     private void deleteAllFiles() {
 
-        acc_fm.delete();
-        gyro_fm.delete();
-        magn_fm.delete();
-        rv_fm.delete();
+        if(acc_fm != null && acc_fm.exist())
+            acc_fm.delete();
+
+        if(gyro_fm != null && gyro_fm.exist())
+            gyro_fm.delete();
+
+        if(magn_fm != null && magn_fm.exist())
+            magn_fm.delete();
+
+        if(rv_fm != null && rv_fm.exist())
+            rv_fm.delete();
     }
 
     private void storeAllFiles() {
@@ -301,6 +333,65 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
     private void writeHeaders() {
 
-        acc_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, location.getLatitude(), location.getLongitude());
+        String temperature;
+        String weatherCondition;
+
+        try {
+
+            temperature = weatherObject.getJSONObject("main").getString("temp");
+            weatherCondition = weatherObject.getJSONArray("weather").getJSONObject(0).getString("description");
+
+        } catch (Exception e) {
+
+            temperature = "";
+            weatherCondition = "";
+        }
+
+        acc_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, location.getLatitude(), location.getLongitude(), temperature, weatherCondition);
+        gyro_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, location.getLatitude(), location.getLongitude(), temperature, weatherCondition);
+        magn_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, location.getLatitude(), location.getLongitude(), temperature, weatherCondition);
+        rv_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, location.getLatitude(), location.getLongitude(), temperature, weatherCondition);
+    }
+
+    private class SecondaryThread extends AsyncTask<Double, Integer, JSONObject> {
+
+        @Override
+        protected JSONObject doInBackground(Double... params) {
+
+            JSONObject data;
+            double latitude;
+            double longitude;
+            String apiKey;
+            String unit;
+
+            latitude = params[0];
+            longitude = params[1];
+            apiKey = "c92c95a0edfcc960bafa7185b3d101b8";
+            unit = "metric";
+
+            try {
+
+                URL url = new URL("http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&units="+unit+"&APPID="+apiKey);
+                HttpURLConnection c = (HttpURLConnection) url.openConnection();
+                c.setRequestMethod("GET");
+
+                c.connect();
+                Scanner reader = new Scanner(c.getInputStream());
+                String result = "";
+
+                while(reader.hasNext()) {
+
+                    result += reader.next();
+                }
+
+                data = new JSONObject(result);
+            }
+            catch(Exception e) {
+
+                data = null;
+            }
+
+            return(data);
+        }
     }
 }

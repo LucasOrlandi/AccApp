@@ -46,14 +46,14 @@ public class AccelerometerFileManager {
         ps.println(x + " " + y + " " + z);
     }
 
-    public void writeHeader(String activity, String timestamp, String smartphoneModel, double gps_latitude, double gps_longitude/*, String temperature, String weather*/) {
+    public void writeHeader(String activity, String timestamp, String smartphoneModel, double gps_latitude, double gps_longitude, String temperature, String weatherCondition) {
 
         ps.println(activity);
         ps.println(timestamp);
         ps.println(smartphoneModel);
         ps.println(gps_latitude + " " + gps_longitude);
-//        ps.println(temperature);
-//        ps.println(weather);
+        ps.println(temperature);
+        ps.println(weatherCondition);
         ps.println("\n");
     }
 
