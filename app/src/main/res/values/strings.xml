@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Accelerometer</string>
+    <string name="app_name">MoveApp</string>
     <string name="button_refresh">Refresh</string>
     <string name="button_show_activities">Show all activities</string>
     <string name="button_random_activities">Show four random activities</string>

@@ -78,6 +78,8 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private Location location;
     private StorageManager sm;
 
+    private ToneGenerator beep;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,7 +159,7 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         super.onResume();
 
         /* To make a beep */
-        final ToneGenerator beep = new ToneGenerator(AudioManager.STREAM_SYSTEM, 100);
+        beep = new ToneGenerator(AudioManager.STREAM_SYSTEM, 100);
 
         countDownTimer = new CountDownTimer(selectedActivity.getTime()*1000, 1000) {
             @Override
@@ -182,6 +184,14 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         button_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
+                    Thread.sleep(20000);
+
+                } catch (InterruptedException e) {
+
+                    e.printStackTrace();
+                }
+                beep.startTone(ToneGenerator.TONE_CDMA_ONE_MIN_BEEP);
                 start();
             }
         });
