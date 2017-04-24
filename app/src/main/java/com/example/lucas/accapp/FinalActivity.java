@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -48,6 +49,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 public class FinalActivity extends AppCompatActivity implements SensorEventListener {
@@ -75,8 +78,10 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     private RotationVectorFileManager rv_fm;
 
     private LocationManager locationManager;
-    private Location location;
     private StorageManager sm;
+
+    private double latitude;
+    private double longitude;
 
     private ToneGenerator beep;
 
@@ -84,6 +89,14 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final);
+
+        try {
+            weatherObject = new WeatherThread().execute(latitude, longitude).get();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
 
         acc_fm = null;
         gyro_fm = null;
@@ -131,28 +144,9 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         tv_selected_activity_name.setText(selectedActivity.getName());
         chronometer.setBase(SystemClock.elapsedRealtime() - selectedActivity.getTime() * 1000);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if ((ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        } else {
-            location = new Location(locationManager.GPS_PROVIDER);
-            location.setLatitude(0);
-            location.setLongitude(0);
-        }
-
         Date mDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy--HH-mm-ss");
         date = sdf.format(mDate);
-
-        try {
-            weatherObject = new SecondaryThread().execute(location.getLatitude(), location.getLongitude()).get();
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
     }
 
     protected void onResume() {
@@ -182,15 +176,24 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         };
 
         button_start.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+
                 try {
-                    Thread.sleep(20000);
+
+                /*
+                    *   TODO: colocar um som diferente ao clicar
+                    *
+                */
+
+                    Thread.sleep(5000);
 
                 } catch (InterruptedException e) {
 
                     e.printStackTrace();
                 }
+
                 beep.startTone(ToneGenerator.TONE_CDMA_ONE_MIN_BEEP);
                 start();
             }
@@ -357,13 +360,20 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
             weatherCondition = "";
         }
 
-        acc_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, location.getLatitude(), location.getLongitude(), temperature, weatherCondition);
-        gyro_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, location.getLatitude(), location.getLongitude(), temperature, weatherCondition);
-        magn_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, location.getLatitude(), location.getLongitude(), temperature, weatherCondition);
-        rv_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, location.getLatitude(), location.getLongitude(), temperature, weatherCondition);
+        acc_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, latitude, longitude, temperature, weatherCondition);
+        gyro_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, latitude, longitude, temperature, weatherCondition);
+        magn_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, latitude, longitude, temperature, weatherCondition);
+        rv_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, latitude, longitude, temperature, weatherCondition);
     }
 
-    private class SecondaryThread extends AsyncTask<Double, Integer, JSONObject> {
+    private class WeatherThread extends AsyncTask<Double, Integer, JSONObject> implements LocationListener {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            getLocation();
+        }
 
         @Override
         protected JSONObject doInBackground(Double... params) {
@@ -402,6 +412,39 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
             }
 
             return(data);
+        }
+
+        private void getLocation() {
+
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            if ((ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            }
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+
+            locationManager.removeUpdates(this);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
         }
     }
 }

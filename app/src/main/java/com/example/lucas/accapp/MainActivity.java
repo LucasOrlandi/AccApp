@@ -18,10 +18,6 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
 
-    /*
-        * TODO: tentar colocar a variavel database como global entre as activities.
-    */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

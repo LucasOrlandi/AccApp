@@ -16,6 +16,7 @@
     <string name="sensor_magnetometer">magnetometer</string>
     <string name="sensor_rotationVector">rotationVector</string>
     <string name="file_extension">.txt</string>
+    <string name="start_activity">Preparing activity (20 secs)</string>
 
     <string name="activity0">Other</string>
     <string name="activity1">Lying</string>
