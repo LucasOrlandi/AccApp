@@ -1,5 +1,7 @@
 package com.example.lucas.accapp;
 
+import android.*;
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
@@ -63,6 +65,7 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
     private JSONObject weatherObject;
 
+    private boolean allowed;
     private String date;
 
     private Button button_start;
@@ -90,12 +93,22 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final);
 
-        try {
-            weatherObject = new WeatherThread().execute(latitude, longitude).get();
+        allowed = false;
 
-        } catch (Exception e) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            e.printStackTrace();
+            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(FinalActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+
+            } else {
+
+                allowed = true;
+            }
+
+        } else {
+
+            allowed = true;
         }
 
         acc_fm = null;
@@ -181,13 +194,17 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
             public void onClick(View v) {
 
                 try {
+                    weatherObject = new WeatherThread().execute(latitude, longitude).get();
 
-                /*
-                    *   TODO: colocar um som diferente ao clicar
-                    *
-                */
+                } catch (Exception e) {
 
-                    Thread.sleep(5000);
+                    e.printStackTrace();
+                }
+
+                try {
+
+                    beep.startTone(ToneGenerator.TONE_SUP_CONFIRM);
+                    Thread.sleep(20000);
 
                 } catch (InterruptedException e) {
 
@@ -366,13 +383,30 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
         rv_fm.writeHeader(selectedActivity.getName().replaceAll("\\s+", ""), date, Build.MODEL, latitude, longitude, temperature, weatherCondition);
     }
 
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+        switch(requestCode) {
+
+            case 0: {
+
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    allowed = true;
+                }
+            }
+        }
+    }
+
     private class WeatherThread extends AsyncTask<Double, Integer, JSONObject> implements LocationListener {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            getLocation();
+            if(allowed) {
+
+                getLocation();
+            }
         }
 
         @Override
@@ -416,20 +450,31 @@ public class FinalActivity extends AppCompatActivity implements SensorEventListe
 
         private void getLocation() {
 
+            Location location;
+
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-            if ((ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+            if(location == null) {
 
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+                if ((ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+                }
+
+            } else {
+
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
             }
         }
 
         @Override
         public void onLocationChanged(Location location) {
 
-            locationManager.removeUpdates(this);
             latitude = location.getLatitude();
             longitude = location.getLongitude();
+            locationManager.removeUpdates(this);
         }
 
         @Override
